@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="30dp"
+    tools:context=".view.MessageActivity">
+
+    <TextView
+        android:id="@+id/activity_time_initiator_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="30dp"
+        android:text="@string/activity_message_title"
+        android:textColor="@color/appOrange"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"/>
+
+    <EditText
+        android:id="@+id/activity_message_et"
+        android:layout_below="@id/activity_time_initiator_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:inputType="textAutoComplete"
+        android:imeOptions="actionDone"
+        android:background="@android:color/transparent"
+        android:textColor="@color/appBlue"
+        android:lines="10"
+        android:gravity="center"
+        android:minLines="5"
+        android:hint="@string/activity_message_et_hint"
+        />
+
+    <Button
+        android:id="@+id/activity_message_continue_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:background="@xml/round_corners_blue"
+        android:padding="20dp"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:text="@string/activity_message_continue_button" />
+</RelativeLayout>

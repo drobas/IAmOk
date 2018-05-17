@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#2196F3</color>
+    <color name="appLime">#CDDC39</color>
+    <color name="appLimeText">#EEFF41</color>
+    <color name="appLimeDark">#C0CA33</color>
+    <color name="appLimeLight">#E6EE9C</color>
+    <color name="appBlue">#2196F3</color>
+    <color name="appBlueLight">#81D4FA</color>
+    <color name="appBlueDark">#3F51B5</color>
+    <color name="appOrange">#FF9800</color>
+    <color name="appOrangeLight">#FFCC80</color>
+    <color name="appBlackTransparent">#CC000000</color>
+</resources>

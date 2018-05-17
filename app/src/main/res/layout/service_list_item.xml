@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_margin="10dp"
+    android:background="@xml/round_corners_orange"
+    android:layout_height="80dp">
+
+    <TextView
+        android:id="@+id/service_list_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:gravity="center"
+        android:textColor="@color/appBlueDark"
+        android:layout_toLeftOf="@id/service_list_item_ib"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_toStartOf="@id/service_list_item_ib" />
+
+    <TextView
+        android:id="@+id/service_list_item_description"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_toLeftOf="@id/service_list_item_ib"
+        android:textColor="@color/appBlueDark"
+        android:layout_below="@id/service_list_item_title"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:layout_toStartOf="@id/service_list_item_ib" />
+
+    <ImageButton
+        android:id="@+id/service_list_item_ib"
+        android:src="@mipmap/ic_cancel_black_48dp"
+        android:background="@android:color/transparent"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:paddingEnd="20dp"
+        android:paddingRight="20dp"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/service_list_item_image"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>

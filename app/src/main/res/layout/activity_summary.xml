@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".view.SummaryActivity">
+
+    <TextView
+        android:id="@+id/activity_summary_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:text="@string/activity_summary_title"
+        android:textColor="@color/appOrange"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"/>
+
+    <LinearLayout
+        android:id="@+id/activity_summary_type_ll"
+        android:layout_width="match_parent"
+        android:layout_below="@id/activity_summary_title_tv"
+        android:padding="10dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/activity_summary_type_tv"
+            android:text="@string/activity_summary_type_tv"
+            android:gravity="end"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/appOrange"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/activity_summary_type_tv_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:textColor="@color/appBlue"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:gravity="start"
+             />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activity_summary_numbers_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_below="@id/activity_summary_type_ll">
+
+        <TextView
+            android:id="@+id/activity_summary_numbers_tv"
+            android:text="@string/activity_summary_numbers_tv"
+            android:gravity="end"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/appOrange"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/activity_summary_numbers_tv_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:textColor="@color/appBlue"
+            android:gravity="start"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activity_summary_message_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_below="@id/activity_summary_numbers_ll">
+
+        <TextView
+            android:id="@+id/activity_summary_message_tv"
+            android:text="@string/activity_summary_message_tv"
+            android:gravity="end"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/appOrange"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/activity_summary_message_tv_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:maxLines="10"
+            android:textColor="@color/appBlue"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:gravity="start|center_vertical"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activity_summary_time_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:layout_below="@id/activity_summary_message_ll">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/activity_summary_time_tv"
+                android:text="@string/activity_summary_time_tv"
+                android:gravity="end"
+                android:textColor="@color/appOrange"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/activity_summary_time_tv_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15sp"
+                android:textColor="@color/appBlue"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:gravity="start"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_summary_time_days_ll"
+            android:visibility="gone"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/activity_summary_days_tv"
+                android:text="@string/activity_summary_days_tv"
+                android:gravity="end"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/appOrange"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/activity_summary_days_tv_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="15sp"
+                android:textColor="@color/appBlue"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:gravity="start"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/activity_summary_done_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@xml/round_corners_blue"
+        android:padding="20dp"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:text="@string/activity_summary_done_button" />
+
+</RelativeLayout>
