@@ -42,6 +42,7 @@ public class ExactTimeSMSJob extends AbstractSMSJob {
         new JobRequest.Builder(ExactTimeSMSJob.TAG)
                 .setExtras(extras)
                 .setExact(millis - System.currentTimeMillis())
+                .setBackoffCriteria(backoffMs, JobRequest.BackoffPolicy.LINEAR)
                 .build()
                 .schedule();
     }

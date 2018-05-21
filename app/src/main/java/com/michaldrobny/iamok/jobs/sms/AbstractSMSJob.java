@@ -1,20 +1,21 @@
 package com.michaldrobny.iamok.jobs.sms;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 
 import com.evernote.android.job.Job;
 import com.michaldrobny.iamok.BuildConfig;
+import com.michaldrobny.iamok.IAmOkApplication;
 import com.michaldrobny.iamok.model.ServiceParser;
 
 /**
@@ -23,38 +24,49 @@ import com.michaldrobny.iamok.model.ServiceParser;
  */
 public abstract class AbstractSMSJob extends Job {
 
+    static final long backoffMs = 300000; // 5 min
+
+    private final SMSBroadcastReceiver smsBroadcastReceiver = new SMSBroadcastReceiver();
+
     SMSJobResult send(Params params) {
 
-        getContext().registerReceiver(new SMSBroadcastReceiver(), new IntentFilter(SMSBroadcastReceiver.ACTION));
+        getContext().registerReceiver(smsBroadcastReceiver, new IntentFilter(SMSBroadcastReceiver.ACTION));
+        ServiceParser parser = new ServiceParser(params.getExtras());
 
         if (!isOnline()) {
-            Intent intent = new Intent(SMSBroadcastReceiver.ACTION);
-            getContext().sendBroadcast(intent);
+            params.getExtras().putBoolean(ServiceParser.ARG_RESCHEDULED, true);
+            sendBroadcast(SMSBroadcastReceiver.RESULT_SERVICE_UNAVAILABLE, parser.getBundle());
             return SMSJobResult.NotReacheable;
         }
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            Intent intent = new Intent(SMSBroadcastReceiver.ACTION);
-            getContext().sendBroadcast(intent);
+            params.getExtras().putBoolean(ServiceParser.ARG_RESCHEDULED, true);
+            sendBroadcast(SMSBroadcastReceiver.RESULT_REQUEST_PERMISSION, parser.getBundle());
             return SMSJobResult.NoPermission;
         }
 
-        if (BuildConfig.DEBUG) {
-            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
-        } else {
-            String[] phoneNumbers = params.getExtras().getStringArray(ServiceParser.ARG_PHONE_NUMBERS);
-            String message = params.getExtras().getString(ServiceParser.ARG_MESSAGE, "");
-
+        if (!BuildConfig.DEBUG) {
             SmsManager smsManager = SmsManager.getDefault();
-            for(String number : phoneNumbers) {
-                PendingIntent sentPI = PendingIntent.getBroadcast(getContext(), 0, new Intent(SMSBroadcastReceiver.ACTION), 0);
-                smsManager.sendTextMessage(number, null, message, sentPI, null);
+            for(String number : parser.getPhoneNumbers()) {
+                Intent intent = new Intent(SMSBroadcastReceiver.ACTION);
+                intent.putExtra(SMSBroadcastReceiver.PARAMS_TAG, parser.getBundle());
+                PendingIntent sentPI = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+                smsManager.sendTextMessage(number, null, parser.getMessage(), sentPI, null);
             }
+            getContext().unregisterReceiver(smsBroadcastReceiver);
+        } else {
+            sendBroadcast(Activity.RESULT_OK, parser.getBundle());
         }
 
-        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent("job-event"));
         return SMSJobResult.Success;
+    }
+
+    private void sendBroadcast(int resultCode, Bundle params) {
+        Intent intent = new Intent(SMSBroadcastReceiver.ACTION);
+        intent.putExtra(SMSBroadcastReceiver.RESULT_TAG, resultCode);
+        intent.putExtra(SMSBroadcastReceiver.PARAMS_TAG, params);
+        getContext().sendBroadcast(intent);
+        getContext().unregisterReceiver(smsBroadcastReceiver);
     }
 
     private boolean isOnline() {

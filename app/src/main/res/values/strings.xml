@@ -69,5 +69,7 @@
     <string name="notification_sms_description_placeholder_error_no_service">failed. No service for SMS.</string>
     <string name="notification_sms_description_placeholder_error_null_pdu">failed. Null PDU.</string>
     <string name="notification_sms_description_placeholder_error_radio_off">failed. Radio is off.</string>
-    <string name="notification_sms_description_placeholder_error_permission">failed. Please check permissions and reachability.</string>
+    <string name="notification_sms_description_placeholder_error_reachability">failed. Service is not reachable.</string>
+    <string name="notification_sms_description_placeholder_error_permission">failed. Request SMS send permission.</string>
+    <string name="title_activity_place_initiator">PlaceInitiatorActivity</string>
 </resources>

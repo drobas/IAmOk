@@ -33,6 +33,9 @@ public class InitiatorActivity extends AppCompatActivity {
 
     public void placeButtonOnClick(View view) {
         showSnackbar(view, R.string.activity_initiator_not_supported_yet);
+        //Intent intent = new Intent(InitiatorActivity.this, PlaceInitiatorActivity.class);
+        //intent.putExtra(ServiceParser.ARG_TYPE, ServiceType.Place.ordinal());
+        //startActivity(intent);
     }
 
     public void sosButtonOnClick(View view) {

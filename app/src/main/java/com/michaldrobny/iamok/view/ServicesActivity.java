@@ -26,7 +26,9 @@ import android.widget.TextView;
 
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
+import com.michaldrobny.iamok.IAmOkApplication;
 import com.michaldrobny.iamok.R;
+import com.michaldrobny.iamok.jobs.sms.AbstractSMSJob;
 import com.michaldrobny.iamok.model.Day;
 import com.michaldrobny.iamok.model.ServiceParser;
 import com.michaldrobny.iamok.model.ServiceType;
@@ -75,7 +77,7 @@ public class ServicesActivity extends AppCompatActivity {
         }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
-                jobEventReceiver, new IntentFilter("job-event"));
+                jobEventReceiver, new IntentFilter(IAmOkApplication.LOCAL_NOTIFICATION_ACTION));
 
         initFloatingButton();
         jobRequests = new ArrayList<JobRequest>(JobManager.instance().getAllJobRequests());
@@ -138,7 +140,7 @@ public class ServicesActivity extends AppCompatActivity {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     request.cancelAndEdit();
-                                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent("job-event"));
+                                    LocalBroadcastManager.getInstance(getContext()).sendBroadcast(new Intent(IAmOkApplication.LOCAL_NOTIFICATION_ACTION));
                                 }
                             });
                     alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(android.R.string.cancel),
@@ -157,7 +159,8 @@ public class ServicesActivity extends AppCompatActivity {
             switch (parser.getType()) {
                 case SpecificTime:
                     SimpleDateFormat specificDateFormat = new SimpleDateFormat("H:mm d.M.yyyy",Locale.getDefault());
-                    release.setText(specificDateFormat.format(new Date(parser.getMillis())));
+                    String releaseText = specificDateFormat.format(new Date(parser.getMillis()));
+                    release.setText(parser.isRescheduled() ? "Rescheduled! Origin time: " + releaseText : releaseText);
                     break;
                 case PeriodicTime:
                     SimpleDateFormat periodicDateFormat = new SimpleDateFormat("H:mm",Locale.getDefault());

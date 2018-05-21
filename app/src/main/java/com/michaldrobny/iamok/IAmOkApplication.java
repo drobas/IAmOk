@@ -19,6 +19,7 @@ import com.testfairy.TestFairy;
  */
 public class IAmOkApplication extends Application {
 
+    public static final String LOCAL_NOTIFICATION_ACTION = "com.michaldrobny.app.iamok.local";
     public static final String NOTIFICATION_CHANNEL = "com.michaldrobny.app.iamok.notification";
 
     @Override

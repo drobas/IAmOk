@@ -25,6 +25,7 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'jp.wasabeef:blurry:2.1.1'
     implementation 'testfairy:testfairy-android-sdk:1.+@aar'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'

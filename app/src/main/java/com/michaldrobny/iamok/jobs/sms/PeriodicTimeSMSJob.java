@@ -30,6 +30,8 @@ public class PeriodicTimeSMSJob extends AbstractSMSJob {
         new JobRequest.Builder(PeriodicTimeSMSJob.TAG)
                 .setExtras(params.getExtras())
                 .setExact(getEarliestEventInMillis(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), parser.getDays()))
+                .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
+                .setBackoffCriteria(backoffMs, JobRequest.BackoffPolicy.LINEAR)
                 .build()
                 .schedule();
 
