@@ -1,6 +1,5 @@
 package com.michaldrobny.iamok.view;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -11,8 +10,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +21,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.michaldrobny.iamok.BuildConfig;
-import com.michaldrobny.iamok.IAmOkApplication;
+import com.michaldrobny.iamok.PermissionManager;
 import com.michaldrobny.iamok.R;
 import com.michaldrobny.iamok.model.ServiceParser;
 import com.michaldrobny.iamok.model.ServiceType;
@@ -32,13 +29,13 @@ import com.michaldrobny.iamok.model.ServiceType;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.michaldrobny.iamok.PermissionManager.READ_CONTACTS_PERMISSION_REQUEST;
 
 public class TimeInitiatorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -51,15 +48,13 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
     @BindView(R.id.activity_time_initiator_continue_b) Button continueButton;
 
     private static int CONTACT_REQUEST = 10011;
-    private static int READ_CONTACTS_PERMISSION_REQUEST = 10001;
 
     private boolean timePickerAlreadyShowed = false; // Android bug - time picker shows twice
     private boolean chosenPeriodic = false;
+
     private final int minuteDelay = BuildConfig.DEBUG ? 1 : 5;
 
-    private Calendar chosenSpecificCalendar;
-    private Calendar chosenPeriodicCalendar;
-    private Calendar tempCalendar = Calendar.getInstance();
+    private Calendar chosenSpecificCalendar, chosenPeriodicCalendar, tempCalendar = Calendar.getInstance();
     private ArrayList<Integer> selectedDaysForPeriodic = new ArrayList<>();
 
     @Override
@@ -68,14 +63,6 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
         setContentView(R.layout.activity_time_initiator);
         ButterKnife.bind(this);
         continueButton.setEnabled(false);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == READ_CONTACTS_PERMISSION_REQUEST && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            continueClick();
-        }
     }
 
     @Override
@@ -118,11 +105,11 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
     }
 
     @OnClick(R.id.activity_time_initiator_continue_b) void continueClick() {
-        if (isReadContactsPermissionGranted()) {
+        if (PermissionManager.isReadContactsPermissionGranted(this)) {
             Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
             startActivityForResult(intent, CONTACT_REQUEST);
         } else {
-            requestSendSmsPermission();
+            PermissionManager.requestReadContactsPermission(this);
         }
     }
 
@@ -133,6 +120,7 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
         }
 
         timePickerAlreadyShowed = true;
+        // show time picker with initial delay
         tempCalendar.set(year, month, dayOfMonth);
         if (tempCalendar.getTimeInMillis() - System.currentTimeMillis() < minuteDelay) {
             tempCalendar.add(Calendar.MINUTE, minuteDelay + 1);
@@ -216,8 +204,8 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
 
     private void showOutdatedAlertDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getString(R.string.activity_time_initiator_outdated_title));
-        alertDialog.setMessage(getString(R.string.activity_time_initiator_outdated_description, minuteDelay));
+        alertDialog.setTitle(getString(R.string.time_initiator_outdated));
+        alertDialog.setMessage(getString(R.string.time_initiator_outdated_desc, minuteDelay));
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -230,13 +218,12 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
 
     private void showReadContactErrorDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getString(R.string.activity_time_initiator_read_contact_error_title));
-        alertDialog.setMessage(getString(R.string.activity_time_initiator_read_contact_error_description));
+        alertDialog.setTitle(getString(R.string.time_initiator_read_contact_error));
+        alertDialog.setMessage(getString(R.string.time_initiator_read_contact_error_desc));
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        continueClick();
                     }
                 });
         alertDialog.show();
@@ -267,18 +254,11 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
         }
     }
 
-    private boolean isReadContactsPermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestSendSmsPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.dialog_contacts_request_message)
-                    .setTitle(R.string.dialog_contacts_request_title);
-            AlertDialog dialog = builder.create();
-            dialog.show();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == READ_CONTACTS_PERMISSION_REQUEST && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            continueClick();
         }
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACTS_PERMISSION_REQUEST);
     }
 }

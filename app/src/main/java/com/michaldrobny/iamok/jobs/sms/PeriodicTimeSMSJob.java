@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
+import com.michaldrobny.iamok.Utils;
 import com.michaldrobny.iamok.model.ServiceParser;
 import com.michaldrobny.iamok.model.ServiceType;
 
@@ -24,16 +25,7 @@ public class PeriodicTimeSMSJob extends AbstractSMSJob {
     @NonNull
     protected Job.Result onRunJob(Job.Params params) {
 
-        ServiceParser parser = new ServiceParser(params.getExtras());
-        Calendar time = Calendar.getInstance();
-        time.setTimeInMillis(parser.getMillis());
-        new JobRequest.Builder(PeriodicTimeSMSJob.TAG)
-                .setExtras(params.getExtras())
-                .setExact(getEarliestEventInMillis(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), parser.getDays()))
-                .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-                .setBackoffCriteria(backoffMs, JobRequest.BackoffPolicy.LINEAR)
-                .build()
-                .schedule();
+        scheduleNewJob(params);
 
         switch (send(params)) {
             case Success:
@@ -47,12 +39,11 @@ public class PeriodicTimeSMSJob extends AbstractSMSJob {
 
         return Job.Result.SUCCESS;
     }
-
     public static void scheduleJob(long millis, @NonNull ArrayList<Integer> days, @NonNull String[] phoneNumbers, @NonNull String message) {
 
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(millis);
-        int[] daysArray = ServiceParser.convertIntegers(days);
+        int[] daysArray = Utils.convertIntegers(days);
 
         PersistableBundleCompat extras = new PersistableBundleCompat();
         extras.putInt(ServiceParser.ARG_TYPE, ServiceType.PeriodicTime.ordinal());
@@ -63,12 +54,26 @@ public class PeriodicTimeSMSJob extends AbstractSMSJob {
 
         new JobRequest.Builder(PeriodicTimeSMSJob.TAG)
                 .setExtras(extras)
-                .setExact(getEarliestEventInMillis(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), daysArray))
+                .setExact(getEarliestNextEventInMillis(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), daysArray))
                 .build()
                 .schedule();
     }
 
-    private static long getEarliestEventInMillis(int hour, int minute, int[] days) {
+    private void scheduleNewJob(Job.Params params) {
+        ServiceParser parser = new ServiceParser(params.getExtras());
+        Calendar time = Calendar.getInstance();
+        time.setTimeInMillis(parser.getMillis());
+        new JobRequest.Builder(PeriodicTimeSMSJob.TAG)
+                .setExtras(params.getExtras())
+                .setExact(getEarliestNextEventInMillis(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), parser.getDays()))
+                .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
+                .setBackoffCriteria(backoffMs, JobRequest.BackoffPolicy.LINEAR)
+                .build()
+                .schedule();
+    }
+
+
+    private static long getEarliestNextEventInMillis(int hour, int minute, int[] days) {
         Calendar now = Calendar.getInstance();
         int dayOfWeek = now.get(Calendar.DAY_OF_WEEK);
 
@@ -80,24 +85,24 @@ public class PeriodicTimeSMSJob extends AbstractSMSJob {
         }
 
         Arrays.sort(days);
-        int nextEventDay = -1;
+        int earliestNextEventDay = -1;
         int nowHour = now.get(Calendar.HOUR_OF_DAY);
         int nowMinute = now.get(Calendar.MINUTE);
         for (int i : days) {
             if (i > dayOfWeek || (i == dayOfWeek && (hour > nowHour || (hour == nowHour && minute > nowMinute)))) {
-                nextEventDay = i;
+                earliestNextEventDay = i;
                 break;
             }
         }
 
-        if (nextEventDay == -1) {
-            nextEventDay = days[0] + 7;
+        if (earliestNextEventDay == -1) {
+            earliestNextEventDay = days[0] + 7;
         }
 
-        Calendar nextEventCalendar = Calendar.getInstance();
-        nextEventDay -= dayOfWeek;
+        int countOfdaysForNextEvent = earliestNextEventDay - dayOfWeek;
 
-        nextEventCalendar.add(Calendar.DAY_OF_MONTH, nextEventDay);
+        Calendar nextEventCalendar = Calendar.getInstance();
+        nextEventCalendar.add(Calendar.DAY_OF_MONTH, countOfdaysForNextEvent);
         nextEventCalendar.set(Calendar.HOUR_OF_DAY, hour);
         nextEventCalendar.set(Calendar.MINUTE, minute);
 

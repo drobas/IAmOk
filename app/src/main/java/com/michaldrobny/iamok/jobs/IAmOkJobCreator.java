@@ -8,7 +8,6 @@ import com.evernote.android.job.JobCreator;
 import com.michaldrobny.iamok.jobs.sms.ExactTimeSMSJob;
 import com.michaldrobny.iamok.jobs.sms.PeriodicTimeSMSJob;
 
-
 /**
  * Created by Michal Drobny on 09/04/2018.
  * Copyright © 2018 Michal Drobny. All rights reserved.

@@ -31,7 +31,7 @@ public enum TutorialPage {
     public static int getImageResource(TutorialPage page) {
         switch (page) {
             case Expedition:
-                return R.drawable.expedition;
+                return R.drawable.adventure;
             case Meeting:
                 return R.drawable.meeting;
             case Senior:

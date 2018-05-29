@@ -16,44 +16,44 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.evernote.android.job.JobManager;
 import com.michaldrobny.iamok.R;
 import com.michaldrobny.iamok.model.TutorialPage;
 
-import jp.wasabeef.blurry.Blurry;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class TutorialActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
-    TutorialPagerAdapter mTutorialPagerAdapter;
-    ViewPager mViewPager;
+
+    @BindView(R.id.tutorial_root_view) ViewGroup viewGroup;
+    @BindView(R.id.pager) ViewPager viewPager;
+    @BindView(R.id.tutorial_tv1) TextView textView;
+    @BindView(R.id.tutorial_skip_button) Button skipButton;
+    @BindView(R.id.tutorial_next_tip_button) Button nextTipButton;
+    @BindView(R.id.tabDots) TabLayout tabLayout;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_tutorial);
+        ButterKnife.bind(this);
 
-        mTutorialPagerAdapter =
-                new TutorialPagerAdapter(
-                        getSupportFragmentManager());
-        mViewPager = findViewById(R.id.pager);
-        mViewPager.setAdapter(mTutorialPagerAdapter);
-        mViewPager.addOnPageChangeListener(this);
-
-        ((TextView) findViewById(R.id.tutorial_tv1))
-                .setText(TutorialPage.getDescription(TutorialPage.Expedition));
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabDots);
-        tabLayout.setupWithViewPager(mViewPager, true);
+        viewPager.setAdapter(new TutorialPagerAdapter(getSupportFragmentManager()));
+        viewPager.addOnPageChangeListener(this);
+        textView.setText(TutorialPage.getDescription(TutorialPage.values()[0]));
+        tabLayout.setupWithViewPager(viewPager, true);
     }
 
-    public void continueButtonClick(View view) {
-        if  (mViewPager.getCurrentItem()+1 == TutorialFragment.PAGE_COUNT) {
-            skipButtonClick(null);
+   @OnClick(R.id.tutorial_next_tip_button) void nextTipOnClick() {
+        int currentPosition = viewPager.getCurrentItem();
+        if (currentPosition == TutorialFragment.PAGE_COUNT-1) {
+            // last position
+            skipButtonClick();
         } else {
-            mViewPager.setCurrentItem(mViewPager.getCurrentItem()+1, true);
+            viewPager.setCurrentItem(currentPosition+1, true);
         }
     }
 
-    public void skipButtonClick(View view) {
+    @OnClick(R.id.tutorial_skip_button) public void skipButtonClick() {
         Intent intent = new Intent(TutorialActivity.this, InitiatorActivity.class);
         startActivity(intent);
     }
@@ -67,11 +67,15 @@ public class TutorialActivity extends AppCompatActivity implements ViewPager.OnP
     @Override
     public void onPageSelected(int position) {
         TutorialPage page = TutorialPage.values()[position];
-        ((TextView) findViewById(R.id.tutorial_tv1))
-                .setText(TutorialPage.getDescription(page));
-        ((Button) findViewById(R.id.tutorial_skip_b))
-                .setVisibility(position+1 == TutorialFragment.PAGE_COUNT ?
-                        View.INVISIBLE : View.VISIBLE);
+        textView.setText(TutorialPage.getDescription(page));
+        if (position+1 == TutorialFragment.PAGE_COUNT) {
+            // last screen
+            skipButton.setVisibility(View.INVISIBLE);
+            nextTipButton.setText(R.string.base_continue);
+        } else {
+            skipButton.setVisibility(View.VISIBLE);
+            nextTipButton.setText(R.string.tutorial_next_tip);
+        }
     }
 
     class TutorialPagerAdapter extends FragmentStatePagerAdapter {
@@ -96,7 +100,8 @@ public class TutorialActivity extends AppCompatActivity implements ViewPager.OnP
     }
 
     public static class TutorialFragment extends Fragment {
-        public static final String ARG_NUMBER = "number";
+
+        public static final String ARG_NUMBER = "arg_number";
         public static final int PAGE_COUNT = 4;
 
         @Override

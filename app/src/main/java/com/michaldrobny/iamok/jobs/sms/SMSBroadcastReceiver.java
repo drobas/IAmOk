@@ -1,21 +1,15 @@
 package com.michaldrobny.iamok.jobs.sms;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 
-import com.michaldrobny.iamok.IAmOkApplication;
+import com.michaldrobny.iamok.NotificationCreator;
 import com.michaldrobny.iamok.R;
 import com.michaldrobny.iamok.model.ServiceParser;
 
-import java.util.Random;
 
 /**
  * Created by Michal Drobny on 16/05/2018.
@@ -24,12 +18,11 @@ import java.util.Random;
 public class SMSBroadcastReceiver extends BroadcastReceiver {
 
     public final static String ACTION = "com.michaldrobny.app.iamok.sms";
+
     public final static String RESULT_TAG = "result_tag";
     public final static String PARAMS_TAG = "params_tag";
-
     public final static int RESULT_SERVICE_UNAVAILABLE = 3638;
     public final static int RESULT_REQUEST_PERMISSION = 8393;
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -39,19 +32,10 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 
         int resultCode = getResultData() != null ? getResultCode() :
                 intent.getIntExtra(RESULT_TAG, SmsManager.RESULT_ERROR_GENERIC_FAILURE);
-
-        Notification notification = new NotificationCompat.Builder(context, IAmOkApplication.NOTIFICATION_CHANNEL)
-                .setContentTitle(context.getString(R.string.notification_sms_title))
-                .setAutoCancel(true)
-                .setShowWhen(true)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(getNotificationDescriptionResource(context, resultCode, parser)))
-                .setChannelId(IAmOkApplication.NOTIFICATION_CHANNEL)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLocalOnly(true)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .build();
-        NotificationManagerCompat.from(context).notify(new Random().nextInt(), notification);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(IAmOkApplication.LOCAL_NOTIFICATION_ACTION));
+        NotificationCreator.sendLocalNotification(
+                context,
+                context.getString(R.string.notification_sms_title),
+                getNotificationDescriptionResource(context, resultCode, parser));
     }
 
     private String getNotificationDescriptionResource(Context context, int resultCode , ServiceParser parser) {

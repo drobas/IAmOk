@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingBottom="30dp"
-        android:text="@string/activity_message_title"
+        android:text="@string/message_title"
         android:textColor="@color/appOrange"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -31,7 +31,7 @@
         android:lines="10"
         android:gravity="center"
         android:minLines="5"
-        android:hint="@string/activity_message_et_hint"
+        android:hint="@string/message_hint"
         />
 
     <Button
@@ -45,5 +45,5 @@
         android:padding="20dp"
         android:textColor="@android:color/white"
         android:textAllCaps="false"
-        android:text="@string/activity_message_continue_button" />
+        android:text="@string/base_continue" />
 </RelativeLayout>

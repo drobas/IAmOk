@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingBottom="20dp"
-        android:text="@string/activity_summary_title"
+        android:text="@string/summary_title"
         android:textColor="@color/appOrange"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -27,7 +27,7 @@
 
         <TextView
             android:id="@+id/activity_summary_type_tv"
-            android:text="@string/activity_summary_type_tv"
+            android:text="@string/summary_type"
             android:gravity="end"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -57,7 +57,7 @@
 
         <TextView
             android:id="@+id/activity_summary_numbers_tv"
-            android:text="@string/activity_summary_numbers_tv"
+            android:text="@string/summary_numbers"
             android:gravity="end"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -86,7 +86,7 @@
 
         <TextView
             android:id="@+id/activity_summary_message_tv"
-            android:text="@string/activity_summary_message_tv"
+            android:text="@string/summary_message"
             android:gravity="end"
             android:textSize="15sp"
             android:textStyle="bold"
@@ -122,7 +122,7 @@
 
             <TextView
                 android:id="@+id/activity_summary_time_tv"
-                android:text="@string/activity_summary_time_tv"
+                android:text="@string/summary_time"
                 android:gravity="end"
                 android:textColor="@color/appOrange"
                 android:textSize="15sp"
@@ -151,7 +151,7 @@
 
             <TextView
                 android:id="@+id/activity_summary_days_tv"
-                android:text="@string/activity_summary_days_tv"
+                android:text="@string/summary_days"
                 android:gravity="end"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -182,6 +182,6 @@
         android:padding="20dp"
         android:textColor="@android:color/white"
         android:textAllCaps="false"
-        android:text="@string/activity_summary_done_button" />
+        android:text="@string/base_done" />
 
 </RelativeLayout>

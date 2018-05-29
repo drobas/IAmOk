@@ -12,5 +12,6 @@
     <color name="appBlueDark">#3F51B5</color>
     <color name="appOrange">#FF9800</color>
     <color name="appOrangeLight">#FFCC80</color>
+    <color name="appBlack">#000000</color>
     <color name="appBlackTransparent">#CC000000</color>
 </resources>

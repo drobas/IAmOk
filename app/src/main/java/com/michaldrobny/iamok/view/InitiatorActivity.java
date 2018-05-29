@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.michaldrobny.iamok.R;
-import com.michaldrobny.iamok.jobs.sms.AbstractSMSJob;
 import com.michaldrobny.iamok.model.ServiceParser;
 import com.michaldrobny.iamok.model.ServiceType;
 
@@ -32,14 +31,13 @@ public class InitiatorActivity extends AppCompatActivity {
     }
 
     public void placeButtonOnClick(View view) {
-        showSnackbar(view, R.string.activity_initiator_not_supported_yet);
-        //Intent intent = new Intent(InitiatorActivity.this, PlaceInitiatorActivity.class);
-        //intent.putExtra(ServiceParser.ARG_TYPE, ServiceType.Place.ordinal());
-        //startActivity(intent);
+        Intent intent = new Intent(InitiatorActivity.this, PlaceInitiatorActivity.class);
+        intent.putExtra(ServiceParser.ARG_TYPE, ServiceType.Place.ordinal());
+        startActivity(intent);
     }
 
     public void sosButtonOnClick(View view) {
-        showSnackbar(view, R.string.activity_initiator_not_supported_yet);
+        showSnackbar(view, R.string.base_not_supported_yet);
     }
 
     public void timeButtonOnClick(View view) {

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingBottom="20dp"
-        android:text="@string/activity_initiator_title"
+        android:text="@string/initiator_title"
         android:textColor="@color/appOrange"
         android:textSize="25sp"
         android:textStyle="bold" />
@@ -25,7 +25,7 @@
         android:layout_below="@id/activity_initiator_title_tv"
         android:textColor="@color/appOrange"
         android:paddingBottom="20dp"
-        android:text="@string/activity_initiator_description1" />
+        android:text="@string/initiator_desc1" />
 
     <TextView
         android:id="@+id/activity_initiator_description2_tv"
@@ -35,7 +35,7 @@
         android:layout_below="@id/activity_initiator_description1_tv"
         android:paddingBottom="20dp"
         android:textColor="@color/appOrange"
-        android:text="@string/activity_initiator_description2" />
+        android:text="@string/initiator_desc2" />
 
     <TextView
         android:id="@+id/activity_initiator_description3_tv"
@@ -45,7 +45,7 @@
         android:layout_below="@id/activity_initiator_description2_tv"
         android:paddingBottom="20dp"
         android:textColor="@color/appOrange"
-        android:text="@string/activity_initiator_description3" />
+        android:text="@string/initiator_desc3" />
 
     <TextView
         android:id="@+id/activity_initiator_description4_tv"
@@ -54,7 +54,7 @@
         android:gravity="center"
         android:layout_below="@id/activity_initiator_description3_tv"
         android:textColor="@color/appOrange"
-        android:text="@string/activity_initiator_description4" />
+        android:text="@string/initiator_desc4" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -72,7 +72,7 @@
             android:textColor="@android:color/white"
             android:background="@xml/round_corners_blue"
             android:textAllCaps="false"
-            android:text="@string/activity_initiator_time" />
+            android:text="@string/initiator_button_time" />
 
         <View
             android:layout_width="10dp"
@@ -87,7 +87,7 @@
             android:textColor="@android:color/white"
             android:background="@xml/round_corners_blue"
             android:textAllCaps="false"
-            android:text="@string/activity_initiator_place" />
+            android:text="@string/initiator_button_place" />
 
         <View
             android:layout_width="10dp"
@@ -102,7 +102,7 @@
             android:textColor="@android:color/white"
             android:background="@xml/round_corners_blue"
             android:textAllCaps="false"
-            android:text="@string/activity_initiator_sos" />
+            android:text="@string/initiator_button_sos" />
 
     </LinearLayout>
 

@@ -7,9 +7,10 @@
     tools:context=".view.TutorialActivity">
     <ImageView
         android:id="@+id/tutorial_iv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/fragment_tutorial_image" />
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/base_image_description" />
 
 </RelativeLayout>

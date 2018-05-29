@@ -10,12 +10,10 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.SmsManager;
 
 import com.evernote.android.job.Job;
 import com.michaldrobny.iamok.BuildConfig;
-import com.michaldrobny.iamok.IAmOkApplication;
 import com.michaldrobny.iamok.model.ServiceParser;
 
 /**

@@ -16,13 +16,15 @@ public enum ServiceType {
     public static int getString(ServiceType type) {
         switch (type) {
             case SpecificTime:
-                return R.string.service_type_specific;
+                return R.string.services_type_specific;
             case PeriodicTime:
-                return R.string.service_type_periodic;
+                return R.string.services_type_periodic;
             case SOS:
-                return R.string.service_type_sos;
+                return R.string.services_type_sos;
+            case Place:
+                return R.string.services_type_place;
                 default:
-                    return R.string.service_type_unknown;
+                    return R.string.base_unknown;
         }
     }
 }
