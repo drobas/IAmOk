@@ -184,7 +184,7 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
         periodicTimeRadioButton.setChecked(false);
         continueButton.setEnabled(true);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H:mm d.M.yyyy", Locale.getDefault());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H:mm   d.M.yyyy", Locale.getDefault());
         currentTextView.setTextColor(getResources().getColor(R.color.appBlue));
         currentTextView.setText(simpleDateFormat.format(chosenSpecificCalendar.getTime()));
     }

@@ -39,22 +39,21 @@ public class PeriodicTimeSMSJob extends AbstractSMSJob {
 
         return Job.Result.SUCCESS;
     }
-    public static void scheduleJob(long millis, @NonNull ArrayList<Integer> days, @NonNull String[] phoneNumbers, @NonNull String message) {
+    public static void scheduleJob(long millis, @NonNull int[] days, @NonNull String[] phoneNumbers, @NonNull String message) {
 
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(millis);
-        int[] daysArray = Utils.convertIntegers(days);
 
         PersistableBundleCompat extras = new PersistableBundleCompat();
         extras.putInt(ServiceParser.ARG_TYPE, ServiceType.PeriodicTime.ordinal());
         extras.putString(ServiceParser.ARG_MESSAGE, message);
         extras.putStringArray(ServiceParser.ARG_PHONE_NUMBERS, phoneNumbers);
         extras.putLong(ServiceParser.ARG_TIME, millis);
-        extras.putIntArray(ServiceParser.ARG_DAYS, daysArray);
+        extras.putIntArray(ServiceParser.ARG_DAYS, days);
 
         new JobRequest.Builder(PeriodicTimeSMSJob.TAG)
                 .setExtras(extras)
-                .setExact(getEarliestNextEventInMillis(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), daysArray))
+                .setExact(getEarliestNextEventInMillis(time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), days))
                 .build()
                 .schedule();
     }

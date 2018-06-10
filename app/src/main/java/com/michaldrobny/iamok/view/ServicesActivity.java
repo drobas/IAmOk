@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import com.evernote.android.job.JobRequest;
 import com.michaldrobny.iamok.NotificationCreator;
 import com.michaldrobny.iamok.R;
 import com.michaldrobny.iamok.Utils;
+import com.michaldrobny.iamok.jobs.sms.AbstractSMSJob;
 import com.michaldrobny.iamok.model.ServiceParser;
 import com.michaldrobny.iamok.model.ServiceType;
 
@@ -160,6 +162,30 @@ public class ServicesActivity extends AppCompatActivity {
                                     Utils.concatenateDays(parser.getDays()),
                                     periodicDateFormat.format(new Date(parser.getMillis()))));
             }
+
+            View.OnClickListener detailListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //check if job request is still valid
+                    if (JobManager.instance().getJobRequest(request.getJobId()) == null) {
+                        NotificationCreator.sendLocalBroadcast(
+                                ServicesActivity.this,
+                                NotificationCreator.LOCAL_BROADCAST_SERVICE_CHANGE);
+                        Snackbar.make(v.getRootView(), R.string.services_request_invalid, Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Intent intent = new Intent(ServicesActivity.this, SummaryActivity.class);
+                    Bundle extras = new Bundle();
+                    extras.putBoolean(ServiceParser.ARG_EDIT, false);
+                    extras.putInt(ServiceParser.ARG_ID, request.getJobId());
+                    intent.putExtras(extras);
+
+                    startActivity(intent);
+                }
+            };
+
+            nameTv.setOnClickListener(detailListener);
+            whenTv.setOnClickListener(detailListener);
 
             return listItem;
         }

@@ -32,6 +32,7 @@ public class MessageActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         assert(extras != null);
         extras.putString(ServiceParser.ARG_MESSAGE, messageEditText.getText().toString());
+        extras.putBoolean(ServiceParser.ARG_EDIT, true);
         intent.putExtras(extras);
         startActivity(intent);
     }
@@ -55,17 +56,6 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-        messageEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    continueButtonClick();
-                    return true;
-                }
-                return false;
-            }
-        });
-        messageEditText.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null)
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);

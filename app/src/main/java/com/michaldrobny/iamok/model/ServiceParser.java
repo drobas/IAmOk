@@ -5,9 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * Created by Michal Drobny on 30/04/2018.
  * Copyright © 2018 Michal Drobny. All rights reserved.
@@ -20,6 +17,8 @@ public class ServiceParser {
     public final static String ARG_MESSAGE = "arg_message";
     public final static String ARG_PHONE_NUMBERS = "arg_contact";
     public final static String ARG_RESCHEDULED = "arg_rescheduled";
+    public final static String ARG_EDIT = "arg_edit";
+    public final static String ARG_ID = "arg_id";
 
     private final ServiceType type;
     private final long millis;

@@ -2,7 +2,9 @@
 
     /* BASE */
     <string name="app_name">IAmOk</string>
+    <string name="base_cancel">Cancel</string>
     <string name="base_continue">Continue</string>
+    <string name="base_stop">Stop</string>
     <string name="base_skip">Skip</string>
     <string name="base_done">Done</string>
     <string name="base_not_supported_yet">Not supported yet</string>
@@ -68,7 +70,7 @@
     <string name="summary_time">Time:</string>
     <string name="summary_message">Message:</string>
     <string name="summary_days">Days:</string>
-    <string name="summary_numbers">Phone numbers:</string>
+    <string name="summary_numbers">Tel:</string>
 
     /* NOTIFICATION */
     <string name="notification_sms_title">IAmOk Application SMS</string>
@@ -86,5 +88,6 @@
     <string name="permission_sms_request_desc">Please, we need your permission to send SMS.</string>
     <string name="permission_contacts_request">Read Contacts Permission</string>
     <string name="permission_contacts_request_desc">We need your permission to read contacts so that you could select to whom we will send the message.</string>
+    <string name="services_request_invalid">Selected service is invalid, updating list of services...</string>
 
 </resources>

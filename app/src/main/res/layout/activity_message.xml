@@ -24,7 +24,7 @@
         android:layout_below="@id/activity_time_initiator_title_tv"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:inputType="textAutoComplete"
+        android:inputType="textMultiLine"
         android:imeOptions="actionDone"
         android:background="@android:color/transparent"
         android:textColor="@color/appBlue"

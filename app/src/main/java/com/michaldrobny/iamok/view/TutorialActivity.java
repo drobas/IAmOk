@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,10 @@ import android.widget.TextView;
 
 import com.michaldrobny.iamok.R;
 import com.michaldrobny.iamok.model.TutorialPage;
+import com.transitionseverywhere.AutoTransition;
+import com.transitionseverywhere.Transition;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +73,7 @@ public class TutorialActivity extends AppCompatActivity implements ViewPager.OnP
     public void onPageSelected(int position) {
         TutorialPage page = TutorialPage.values()[position];
         textView.setText(TutorialPage.getDescription(page));
+        TransitionManager.beginDelayedTransition(viewGroup);
         if (position+1 == TutorialFragment.PAGE_COUNT) {
             // last screen
             skipButton.setVisibility(View.INVISIBLE);

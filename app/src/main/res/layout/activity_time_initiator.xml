@@ -65,6 +65,7 @@
         android:id="@+id/activity_time_initiator_periodic_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="30dp"
         android:gravity="center"
         android:layout_below="@id/activity_time_initiator_current_ll">
 

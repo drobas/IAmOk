@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_margin="10dp"
-    android:background="@xml/round_corners_orange"
+    android:background="@xml/round_corners_blue_light"
     android:layout_height="80dp">
 
     <TextView
@@ -11,7 +10,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
         android:gravity="center"
-        android:textColor="@color/appBlueDark"
+        android:textColor="@android:color/white"
         android:layout_toLeftOf="@id/service_list_item_ib"
         android:textSize="15sp"
         android:textStyle="bold"
@@ -22,7 +21,7 @@
         android:layout_width="match_parent"
         android:gravity="center"
         android:layout_toLeftOf="@id/service_list_item_ib"
-        android:textColor="@color/appBlueDark"
+        android:textColor="@android:color/white"
         android:layout_below="@id/service_list_item_title"
         android:layout_height="wrap_content"
         android:textSize="13sp"
@@ -30,7 +29,7 @@
 
     <ImageButton
         android:id="@+id/service_list_item_ib"
-        android:src="@mipmap/ic_cancel_black_48dp"
+        android:src="@android:drawable/ic_delete"
         android:background="@android:color/transparent"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
