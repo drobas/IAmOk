@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -51,8 +53,8 @@
             android:name=".view.MessageActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.SummaryActivity"
             android:configChanges="orientation"
@@ -60,9 +62,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".view.PlaceInitiatorActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -75,6 +77,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <service android:name=".model.ScreenOnOffService" />
+
+        <activity android:name=".view.SOSInitiatorActivity"></activity>
     </application>
 
 </manifest>

@@ -4,45 +4,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="30dp"
-    tools:context=".view.PlaceInitiatorActivity">
+    tools:context=".view.SOSInitiatorActivity">
 
     <TextView
-        android:id="@+id/activity_place_initiator_title_tv"
+        android:id="@+id/activity_sos_initiator_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingBottom="30dp"
-        android:text="@string/place_initiator_title"
+        android:text="@string/sos_initiator_title"
         android:textColor="@color/appOrange"
         android:textSize="25sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/activity_place_initiator_description_tv"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/place_initiator_desc"
-        android:textColor="@color/appOrange"
-        android:textSize="18sp"
-        android:layout_below="@id/activity_place_initiator_title_tv"/>
+        android:layout_above="@id/activity_sos_initiator_number_picker"
+        android:text="@string/sos_initiator_number_picker_desc"/>
 
-    <fragment
-        android:id="@+id/google_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
+    <TextView
+        android:id="@+id/activity_sos_number_picker_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        tools:context=".view.PlaceInitiatorActivity" />
+        android:layout_toRightOf="@id/activity_sos_initiator_number_picker"
+        android:layout_toEndOf="@id/activity_sos_initiator_number_picker"
+        android:text="@string/base_unit_minute"/>
 
-    <View
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        android:background="@xml/circle"/>
+    <NumberPicker
+        android:id="@+id/activity_sos_initiator_number_picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
+        android:layout_centerInParent="true"/>
 
     <Button
-        android:id="@+id/activity_place_initiator_continue_b"
+        android:id="@+id/activity_sos_initiator_continue_b"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

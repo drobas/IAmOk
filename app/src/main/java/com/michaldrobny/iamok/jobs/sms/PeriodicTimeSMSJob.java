@@ -5,11 +5,10 @@ import android.support.annotation.NonNull;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
-import com.michaldrobny.iamok.Utils;
-import com.michaldrobny.iamok.model.ServiceParser;
+import com.michaldrobny.iamok.model.Constants;
+import com.michaldrobny.iamok.model.ServiceWrapper;
 import com.michaldrobny.iamok.model.ServiceType;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -45,11 +44,11 @@ public class PeriodicTimeSMSJob extends AbstractSMSJob {
         time.setTimeInMillis(millis);
 
         PersistableBundleCompat extras = new PersistableBundleCompat();
-        extras.putInt(ServiceParser.ARG_TYPE, ServiceType.PeriodicTime.ordinal());
-        extras.putString(ServiceParser.ARG_MESSAGE, message);
-        extras.putStringArray(ServiceParser.ARG_PHONE_NUMBERS, phoneNumbers);
-        extras.putLong(ServiceParser.ARG_TIME, millis);
-        extras.putIntArray(ServiceParser.ARG_DAYS, days);
+        extras.putInt(Constants.ARG_TYPE, ServiceType.PeriodicTime.ordinal());
+        extras.putString(Constants.ARG_MESSAGE, message);
+        extras.putStringArray(Constants.ARG_PHONE_NUMBERS, phoneNumbers);
+        extras.putLong(Constants.ARG_TIME, millis);
+        extras.putIntArray(Constants.ARG_DAYS, days);
 
         new JobRequest.Builder(PeriodicTimeSMSJob.TAG)
                 .setExtras(extras)
@@ -59,7 +58,7 @@ public class PeriodicTimeSMSJob extends AbstractSMSJob {
     }
 
     private void scheduleNewJob(Job.Params params) {
-        ServiceParser parser = new ServiceParser(params.getExtras());
+        ServiceWrapper parser = new ServiceWrapper(params.getExtras());
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(parser.getMillis());
         new JobRequest.Builder(PeriodicTimeSMSJob.TAG)

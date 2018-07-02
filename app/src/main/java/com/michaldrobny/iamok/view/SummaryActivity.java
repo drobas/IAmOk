@@ -22,8 +22,11 @@ import com.michaldrobny.iamok.R;
 import com.michaldrobny.iamok.jobs.sms.AbstractSMSJob;
 import com.michaldrobny.iamok.jobs.sms.ExactTimeSMSJob;
 import com.michaldrobny.iamok.jobs.sms.PeriodicTimeSMSJob;
+import com.michaldrobny.iamok.jobs.sos.InactivityJob;
+import com.michaldrobny.iamok.model.Constants;
 import com.michaldrobny.iamok.model.Day;
-import com.michaldrobny.iamok.model.ServiceParser;
+import com.michaldrobny.iamok.model.ScreenOnOffService;
+import com.michaldrobny.iamok.model.ServiceWrapper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,7 +38,7 @@ import butterknife.OnClick;
 
 public class SummaryActivity extends AppCompatActivity {
 
-    private ServiceParser parser;
+    private ServiceWrapper serviceWrapper;
     private int jobRequestId = -1;
     private boolean isEdit;
 
@@ -46,6 +49,8 @@ public class SummaryActivity extends AppCompatActivity {
     @BindView(R.id.activity_summary_time_days_ll) LinearLayout timeDaysLinearLayout;
     @BindView(R.id.activity_summary_numbers_tv_input) TextView numbersInput;
     @BindView(R.id.activity_summary_message_tv_input) TextView messageInput;
+    @BindView(R.id.activity_summary_location_ll) LinearLayout locationLinearLayout;
+    @BindView(R.id.activity_summary_location_tv_input) TextView locationInput;
     @BindView(R.id.activity_summary_done_b) Button doneButton;
     @BindView(R.id.activity_summary_cancel_b) Button cancelButton;
     @BindView(R.id.activity_summary_cancel_padding) View cancelPadding;
@@ -58,38 +63,39 @@ public class SummaryActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         assert (bundle != null);
-        isEdit = getIntent().getBooleanExtra(ServiceParser.ARG_EDIT, true);
+        isEdit = getIntent().getBooleanExtra(Constants.ARG_EDIT, true);
         if (isEdit) {
-            parser = new ServiceParser(bundle);
+            serviceWrapper = new ServiceWrapper(bundle);
         } else {
-            jobRequestId = bundle.getInt(ServiceParser.ARG_ID);
-            parser = new ServiceParser(JobManager.instance().getJobRequest(jobRequestId).getExtras());
+            jobRequestId = bundle.getInt(Constants.ARG_ID);
+            serviceWrapper = new ServiceWrapper(JobManager.instance().getJobRequest(jobRequestId).getExtras());
         }
         initViews();
     }
 
     private void initViews() {
-        typeInput.setText(parser.getType().name());
-        messageInput.setText(parser.getMessage());
-        numbersInput.setText(TextUtils.join(", ", parser.getPhoneNumbers()));
+        typeInput.setText(serviceWrapper.getType().name());
+        messageInput.setText(serviceWrapper.getMessage());
+        numbersInput.setText(TextUtils.join(", ", serviceWrapper.getPhoneNumbers()));
         doneButton.setText(isEdit ? R.string.base_done : R.string.base_stop);
         cancelPadding.setVisibility(isEdit ? View.GONE : View.VISIBLE);
         cancelButton.setVisibility(isEdit ? View.GONE : View.VISIBLE);
 
-        switch (parser.getType()) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H:mm d.M.yyyy", Locale.getDefault());
+        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("H:mm", Locale.getDefault());
+
+        switch (serviceWrapper.getType()) {
             case SpecificTime:
                 timeLinearLayout.setVisibility(View.VISIBLE);
                 timeDaysLinearLayout.setVisibility(View.GONE);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("H:mm d.M.yyyy", Locale.getDefault());
-                timeInput.setText(simpleDateFormat.format(new Date(parser.getMillis())));
+                timeInput.setText(simpleDateFormat.format(new Date(serviceWrapper.getMillis())));
                 break;
             case PeriodicTime:
                 timeLinearLayout.setVisibility(View.VISIBLE);
                 timeDaysLinearLayout.setVisibility(View.VISIBLE);
-                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("H:mm", Locale.getDefault());
-                timeInput.setText(simpleTimeFormat.format(new Date(parser.getMillis())));
+                timeInput.setText(simpleTimeFormat.format(new Date(serviceWrapper.getMillis())));
                 StringBuilder sb = new StringBuilder();
-                int[] days = parser.getDays();
+                int[] days = serviceWrapper.getDays();
                 for (int i=0; i<days.length; i++) {
                     sb.append(Day.values()[days[i]].name());
                     if (i != days.length-1) {
@@ -97,6 +103,21 @@ public class SummaryActivity extends AppCompatActivity {
                     }
                 }
                 daysInput.setText(sb.toString());
+                break;
+            case Place:
+                locationLinearLayout.setVisibility(View.VISIBLE);
+                locationInput.setText(getString(
+                        R.string.summary_location_input,
+                        serviceWrapper.getPositionLatitude(),
+                        serviceWrapper.getPositionLongitude(),
+                        serviceWrapper.getZoom()));
+                break;
+            case SOS:
+                timeLinearLayout.setVisibility(View.VISIBLE);
+                timeDaysLinearLayout.setVisibility(View.GONE);
+                timeInput.setText(simpleTimeFormat.format(new Date(serviceWrapper.getMillis())));
+                break;
+
         }
     }
 
@@ -131,6 +152,12 @@ public class SummaryActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         JobRequest request = JobManager.instance().getJobRequest(jobRequestId);
                         request.cancelAndEdit();
+
+                        if (request.getTag().equals(InactivityJob.TAG)) {
+                            Intent intent = new Intent(SummaryActivity.this, ScreenOnOffService.class);
+                            stopService(intent);
+                        }
+
                         onBackPressed();
                         NotificationCreator.sendLocalBroadcast(
                                 SummaryActivity.this,
@@ -151,22 +178,33 @@ public class SummaryActivity extends AppCompatActivity {
         }
 
         AbstractSMSJob.IAmOkServiceState state = AbstractSMSJob.IAmOkServiceState.Invalid;
-        switch (parser.getType()) {
+        switch (serviceWrapper.getType()) {
             case SpecificTime:
-                if (parser.getMillis() > 0 && parser.getPhoneNumbers() != null) {
-                    ExactTimeSMSJob.scheduleJob(parser.getMillis(), parser.getPhoneNumbers(), parser.getMessage());
+                if (serviceWrapper.getMillis() > 0 && serviceWrapper.getPhoneNumbers() != null) {
+                    ExactTimeSMSJob.scheduleJob(serviceWrapper.getMillis(), serviceWrapper.getPhoneNumbers(), serviceWrapper.getMessage());
                     state = AbstractSMSJob.IAmOkServiceState.Scheduled;
                 }
                 break;
             case PeriodicTime:
-                int[] days = parser.getDays();
-                if (parser.getMillis() > 0 && parser.getPhoneNumbers() != null && days.length != 0) {
-                    PeriodicTimeSMSJob.scheduleJob(parser.getMillis(), days, parser.getPhoneNumbers(), parser.getMessage());
+                int[] days = serviceWrapper.getDays();
+                if (serviceWrapper.getMillis() > 0 && serviceWrapper.getPhoneNumbers() != null && days.length != 0) {
+                    PeriodicTimeSMSJob.scheduleJob(serviceWrapper.getMillis(), days, serviceWrapper.getPhoneNumbers(), serviceWrapper.getMessage());
                     state = AbstractSMSJob.IAmOkServiceState.Scheduled;
+                }
+                break;
+            case SOS:
+                if (serviceWrapper.getMillis() > 0 && serviceWrapper.getPhoneNumbers() != null) {
+                    Intent intent = new Intent(this, ScreenOnOffService.class);
+                    intent.putExtra(Constants.ARG_WRAPPER_SERVICE, serviceWrapper);
+                    startService(intent);
                 }
                 break;
         }
 
+        showSnackbar(state);
+    }
+
+    private void showSnackbar(AbstractSMSJob.IAmOkServiceState state) {
         Snackbar snackbar = Snackbar.make(doneButton.getRootView(), state.name(), Snackbar.LENGTH_SHORT);
         if (state == AbstractSMSJob.IAmOkServiceState.Scheduled) {
             snackbar.addCallback(new Snackbar.Callback() {
@@ -180,6 +218,10 @@ public class SummaryActivity extends AppCompatActivity {
                 public void onShown(Snackbar snackbar) {}
             });
         }
+        View snackbarView = snackbar.getView();
+        int snackbarTextId = android.support.design.R.id.snackbar_text;
+        TextView textView = (TextView)snackbarView.findViewById(snackbarTextId);
+        textView.setTextColor(getResources().getColor(R.color.appOrange));
         snackbar.show();
     }
 }

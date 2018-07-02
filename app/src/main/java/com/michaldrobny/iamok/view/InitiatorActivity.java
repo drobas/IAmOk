@@ -8,7 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.michaldrobny.iamok.R;
-import com.michaldrobny.iamok.model.ServiceParser;
+import com.michaldrobny.iamok.model.Constants;
+import com.michaldrobny.iamok.model.ServiceWrapper;
 import com.michaldrobny.iamok.model.ServiceType;
 
 public class InitiatorActivity extends AppCompatActivity {
@@ -26,24 +27,25 @@ public class InitiatorActivity extends AppCompatActivity {
         View snackbarView = snackbar.getView();
         int snackbarTextId = android.support.design.R.id.snackbar_text;
         TextView textView = (TextView)snackbarView.findViewById(snackbarTextId);
-        textView.setTextColor(getResources().getColor(R.color.appLime));
+        textView.setTextColor(getResources().getColor(R.color.appOrange));
         snackbar.show();
     }
 
     public void placeButtonOnClick(View view) {
-        showSnackbar(view, R.string.base_not_supported_yet);
-        //Intent intent = new Intent(InitiatorActivity.this, PlaceInitiatorActivity.class);
-        //intent.putExtra(ServiceParser.ARG_TYPE, ServiceType.Place.ordinal());
-        //startActivity(intent);
+        Intent intent = new Intent(InitiatorActivity.this, PlaceInitiatorActivity.class);
+        intent.putExtra(Constants.ARG_TYPE, ServiceType.Place.ordinal());
+        startActivity(intent);
     }
 
     public void sosButtonOnClick(View view) {
-        showSnackbar(view, R.string.base_not_supported_yet);
+        Intent intent = new Intent(InitiatorActivity.this, SOSInitiatorActivity.class);
+        intent.putExtra(Constants.ARG_TYPE, ServiceType.SOS.ordinal());
+        startActivity(intent);
     }
 
     public void timeButtonOnClick(View view) {
         Intent intent = new Intent(InitiatorActivity.this, TimeInitiatorActivity.class);
-        intent.putExtra(ServiceParser.ARG_TYPE, ServiceType.SpecificTime.ordinal());
+        intent.putExtra(Constants.ARG_TYPE, ServiceType.SpecificTime.ordinal());
         startActivity(intent);
     }
 }

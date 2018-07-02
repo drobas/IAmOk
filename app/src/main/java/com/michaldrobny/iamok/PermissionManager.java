@@ -16,6 +16,7 @@ public class PermissionManager {
 
     public static final int SMS_SEND_PERMISSION_REQUEST = 101;
     public static int READ_CONTACTS_PERMISSION_REQUEST = 10001;
+    public static int LOCATION_TRACKING_PERMISSION_REQUEST = 111;
 
     public static boolean isReadContactsPermissionGranted(Context context) {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
@@ -23,6 +24,11 @@ public class PermissionManager {
 
     public static boolean isSmsSendPermissionGranted(Context context) {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean isLocationPermissionGranted(Context context) {
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
     }
 
     public static void requestReadContactsPermission(Activity activity) {
@@ -41,6 +47,17 @@ public class PermissionManager {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setMessage(R.string.permission_sms_request_desc)
                     .setTitle(R.string.permission_sms_request);
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.SEND_SMS}, SMS_SEND_PERMISSION_REQUEST);
+    }
+
+    public static void requestLocationPermission(Activity activity) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage(R.string.permission_location_request_desc)
+                    .setTitle(R.string.permission_location_request);
             AlertDialog dialog = builder.create();
             dialog.show();
         }

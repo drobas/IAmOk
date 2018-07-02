@@ -16,7 +16,8 @@ import com.evernote.android.job.Job;
 import com.michaldrobny.iamok.BuildConfig;
 import com.michaldrobny.iamok.NotificationCreator;
 import com.michaldrobny.iamok.R;
-import com.michaldrobny.iamok.model.ServiceParser;
+import com.michaldrobny.iamok.model.Constants;
+import com.michaldrobny.iamok.model.ServiceWrapper;
 
 /**
  * Created by Michal Drobny on 09/04/2018.
@@ -25,7 +26,6 @@ import com.michaldrobny.iamok.model.ServiceParser;
 public abstract class AbstractSMSJob extends Job {
 
     private final static String ACTION = "com.michaldrobny.app.iamok.sms";
-    private final static String PARAMS_TAG = "params_tag";
     private final static int RESULT_SERVICE_UNAVAILABLE = 3638;
     private final static int RESULT_REQUEST_PERMISSION = 8393;
 
@@ -35,26 +35,26 @@ public abstract class AbstractSMSJob extends Job {
 
     SMSJobResult send(Params params) {
 
-        ServiceParser parser = new ServiceParser(params.getExtras());
+        ServiceWrapper parser = new ServiceWrapper(params.getExtras());
 
         if (!isOnline()) {
-            params.getExtras().putBoolean(ServiceParser.ARG_RESCHEDULED, true);
+            params.getExtras().putBoolean(Constants.ARG_RESCHEDULED, true);
             sendNotification(getContext(), RESULT_SERVICE_UNAVAILABLE, parser);
             return SMSJobResult.NotReacheable;
         }
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            params.getExtras().putBoolean(ServiceParser.ARG_RESCHEDULED, true);
+            params.getExtras().putBoolean(Constants.ARG_RESCHEDULED, true);
             sendNotification(getContext(), RESULT_REQUEST_PERMISSION, parser);
             return SMSJobResult.NoPermission;
         }
 
-        if (!BuildConfig.DEBUG) {
+        if (BuildConfig.BUILD_TYPE.equals("release")) {
             SmsManager smsManager = SmsManager.getDefault();
             registerSMSBroadcastReceiver(getContext());
             for(String number : parser.getPhoneNumbers()) {
                 Intent intent = new Intent(ACTION);
-                intent.putExtra(PARAMS_TAG, parser.getBundle());
+                intent.putExtra(Constants.ARG_WRAPPER_SERVICE, parser);
                 PendingIntent sentPI = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
                 smsManager.sendTextMessage(number, null, parser.getMessage(), sentPI, null);
             }
@@ -71,7 +71,7 @@ public abstract class AbstractSMSJob extends Job {
             @Override
             public void onReceive(Context context, Intent intent) {
                 assert (intent.getExtras() != null);
-                sendNotification(context, getResultCode(), new ServiceParser(intent.getBundleExtra(PARAMS_TAG)));
+                sendNotification(context, getResultCode(), (ServiceWrapper) intent.getParcelableExtra(Constants.ARG_WRAPPER_SERVICE));
             }
         };
         context.registerReceiver(smsBroadcastReceiver, new IntentFilter(ACTION));
@@ -90,7 +90,7 @@ public abstract class AbstractSMSJob extends Job {
         return cm != null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-    private void sendNotification(Context context, int resultCode, ServiceParser parser) {
+    private void sendNotification(Context context, int resultCode, ServiceWrapper parser) {
         NotificationCreator.sendLocalNotification(
                 context,
                 context.getString(R.string.notification_sms_title),
@@ -100,7 +100,7 @@ public abstract class AbstractSMSJob extends Job {
                 NotificationCreator.LOCAL_BROADCAST_SERVICE_CHANGE);
     }
 
-    private String getNotificationDescriptionResource(Context context, int resultCode , ServiceParser parser) {
+    private String getNotificationDescriptionResource(Context context, int resultCode , ServiceWrapper parser) {
         String messageCut = parser.getMessage().length() > 10 ? parser.getMessage().substring(0, 10) + "..." : parser.getMessage();
         String phoneNumber = parser.getPhoneNumbers()[0];
         String ending = "";

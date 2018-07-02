@@ -1,17 +1,10 @@
 package com.michaldrobny.iamok.view;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.view.View;
@@ -21,9 +14,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.michaldrobny.iamok.BuildConfig;
-import com.michaldrobny.iamok.PermissionManager;
 import com.michaldrobny.iamok.R;
-import com.michaldrobny.iamok.model.ServiceParser;
+import com.michaldrobny.iamok.model.Constants;
 import com.michaldrobny.iamok.model.ServiceType;
 
 import java.text.SimpleDateFormat;
@@ -35,9 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.michaldrobny.iamok.PermissionManager.READ_CONTACTS_PERMISSION_REQUEST;
-
-public class TimeInitiatorActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class TimeInitiatorActivity extends PickContactActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     @BindView(R.id.activity_time_initiator_current_rb) AppCompatRadioButton specificTimeRadioButton;
     @BindView(R.id.activity_time_initiator_periodic_rb) AppCompatRadioButton periodicTimeRadioButton;
@@ -47,12 +37,10 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
 
     @BindView(R.id.activity_time_initiator_continue_b) Button continueButton;
 
-    private static int CONTACT_REQUEST = 10011;
-
     private boolean timePickerAlreadyShowed = false; // Android bug - time picker shows twice
     private boolean chosenPeriodic = false;
 
-    private final int minuteDelay = BuildConfig.DEBUG ? 1 : 5;
+    private final int minuteDelay = BuildConfig.BUILD_TYPE.equals("debug") ? 1 : 5;
 
     private Calendar chosenSpecificCalendar, chosenPeriodicCalendar, tempCalendar = Calendar.getInstance();
     private ArrayList<Integer> selectedDaysForPeriodic = new ArrayList<>();
@@ -63,32 +51,6 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
         setContentView(R.layout.activity_time_initiator);
         ButterKnife.bind(this);
         continueButton.setEnabled(false);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == CONTACT_REQUEST && resultCode == Activity.RESULT_OK) {
-            String phoneNumber;
-            Uri uri = data.getData();
-            assert (uri != null);
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor == null) {
-                showReadContactErrorDialog();
-                return;
-            }
-            cursor.moveToFirst();
-            phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            cursor.close();
-
-            Intent intent = new Intent(TimeInitiatorActivity.this, MessageActivity.class);
-            intent.putExtra(ServiceParser.ARG_TYPE, chosenPeriodic ? ServiceType.PeriodicTime.ordinal() : ServiceType.SpecificTime.ordinal());
-            intent.putExtra(ServiceParser.ARG_PHONE_NUMBERS, new String[]{phoneNumber});
-            intent.putExtra(ServiceParser.ARG_TIME, chosenPeriodic ? chosenPeriodicCalendar.getTimeInMillis() : chosenSpecificCalendar.getTimeInMillis());
-            intent.putIntegerArrayListExtra(ServiceParser.ARG_DAYS, selectedDaysForPeriodic);
-            startActivity(intent);
-        }
     }
 
     @OnClick(R.id.activity_time_initiator_current_ll) void chooseSpecificTimeClick() {
@@ -105,12 +67,7 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
     }
 
     @OnClick(R.id.activity_time_initiator_continue_b) void continueClick() {
-        if (PermissionManager.isReadContactsPermissionGranted(this)) {
-            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-            startActivityForResult(intent, CONTACT_REQUEST);
-        } else {
-            PermissionManager.requestReadContactsPermission(this);
-        }
+        showPickContactActivity();
     }
 
     @Override
@@ -216,17 +173,11 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
         alertDialog.show();
     }
 
-    private void showReadContactErrorDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(getString(R.string.time_initiator_read_contact_error));
-        alertDialog.setMessage(getString(R.string.time_initiator_read_contact_error_desc));
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-        alertDialog.show();
+    @Override
+    protected void passArguments(Intent intent) {
+        intent.putExtra(Constants.ARG_TYPE, chosenPeriodic ? ServiceType.PeriodicTime.ordinal() : ServiceType.SpecificTime.ordinal());
+        intent.putExtra(Constants.ARG_TIME, chosenPeriodic ? chosenPeriodicCalendar.getTimeInMillis() : chosenSpecificCalendar.getTimeInMillis());
+        intent.putIntegerArrayListExtra(Constants.ARG_DAYS, selectedDaysForPeriodic);
     }
 
     public void onPeriodicDayClick(View view) {
@@ -251,14 +202,6 @@ public class TimeInitiatorActivity extends AppCompatActivity implements DatePick
                 specificTimeRadioButton.setChecked(false);
                 continueButton.setEnabled(true);
             }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == READ_CONTACTS_PERMISSION_REQUEST && grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            continueClick();
         }
     }
 }

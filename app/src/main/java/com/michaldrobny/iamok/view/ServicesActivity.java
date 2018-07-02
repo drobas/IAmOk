@@ -26,8 +26,8 @@ import com.evernote.android.job.JobRequest;
 import com.michaldrobny.iamok.NotificationCreator;
 import com.michaldrobny.iamok.R;
 import com.michaldrobny.iamok.Utils;
-import com.michaldrobny.iamok.jobs.sms.AbstractSMSJob;
-import com.michaldrobny.iamok.model.ServiceParser;
+import com.michaldrobny.iamok.model.Constants;
+import com.michaldrobny.iamok.model.ServiceWrapper;
 import com.michaldrobny.iamok.model.ServiceType;
 
 import java.text.SimpleDateFormat;
@@ -118,7 +118,7 @@ public class ServicesActivity extends AppCompatActivity {
             }
 
             final JobRequest request = servicesList.get(position);
-            ServiceParser parser = new ServiceParser(request.getExtras());
+            ServiceWrapper parser = new ServiceWrapper(request.getExtras());
 
             ImageButton image = listItem.findViewById(R.id.service_list_item_ib);
             image.setOnClickListener(new View.OnClickListener() {
@@ -176,8 +176,8 @@ public class ServicesActivity extends AppCompatActivity {
                     }
                     Intent intent = new Intent(ServicesActivity.this, SummaryActivity.class);
                     Bundle extras = new Bundle();
-                    extras.putBoolean(ServiceParser.ARG_EDIT, false);
-                    extras.putInt(ServiceParser.ARG_ID, request.getJobId());
+                    extras.putBoolean(Constants.ARG_EDIT, false);
+                    extras.putInt(Constants.ARG_ID, request.getJobId());
                     intent.putExtras(extras);
 
                     startActivity(intent);

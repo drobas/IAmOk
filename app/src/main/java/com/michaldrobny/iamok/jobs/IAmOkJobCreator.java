@@ -7,6 +7,7 @@ import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
 import com.michaldrobny.iamok.jobs.sms.ExactTimeSMSJob;
 import com.michaldrobny.iamok.jobs.sms.PeriodicTimeSMSJob;
+import com.michaldrobny.iamok.jobs.sos.InactivityJob;
 
 /**
  * Created by Michal Drobny on 09/04/2018.
@@ -22,6 +23,8 @@ public class IAmOkJobCreator implements JobCreator {
                 return new ExactTimeSMSJob();
             case PeriodicTimeSMSJob.TAG:
                 return new PeriodicTimeSMSJob();
+            case InactivityJob.TAG:
+                return new InactivityJob();
             default:
                 return null;
         }

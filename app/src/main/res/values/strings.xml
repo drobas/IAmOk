@@ -9,6 +9,8 @@
     <string name="base_done">Done</string>
     <string name="base_not_supported_yet">Not supported yet</string>
     <string name="base_image_description">Image description</string>
+    <string name="base_unit_minute">minutes</string>
+    <string name="base_unit_hour">hours</string>
     <string name="base_monday_short">Mon</string>
     <string name="base_tuesday_short">Tue</string>
     <string name="base_wednesday_short">Wed</string>
@@ -27,6 +29,7 @@
 
     /* SERVICES */
     <string name="services_title">Services</string>
+    <string name="services_request_invalid">Selected service is invalid, updating list of services…</string>
     <string name="services_type_specific">Specific date and time</string>
     <string name="services_type_periodic">Periodic time</string>
     <string name="services_type_sos">SOS</string>
@@ -58,7 +61,12 @@
     <string name="time_initiator_read_contact_error_desc">Unable to read selected contact.</string>
 
     /* PLACE INITIATOR */
-    <string name="activity_place_initiator_title">Bound the area</string>
+    <string name="place_initiator_title">Bound the area</string>
+    <string name="place_initiator_desc">Move, zoom out, zoom in on the map so that the area within the blue circle matches the area that will trigger the service</string>
+
+    /* SOS INITIATOR */
+    <string name="sos_initiator_title">SOS</string>
+    <string name="sos_initiator_number_picker_desc">Send an emergency message when inactivity took more than</string>
 
     /* MESSAGE */
     <string name="message_title">Message</string>
@@ -71,6 +79,8 @@
     <string name="summary_message">Message:</string>
     <string name="summary_days">Days:</string>
     <string name="summary_numbers">Tel:</string>
+    <string name="summary_location">Location:</string>
+    <string name="summary_location_input">Latitute %d, longitude %d, radius %d meters.</string>
 
     /* NOTIFICATION */
     <string name="notification_sms_title">IAmOk Application SMS</string>
@@ -88,6 +98,7 @@
     <string name="permission_sms_request_desc">Please, we need your permission to send SMS.</string>
     <string name="permission_contacts_request">Read Contacts Permission</string>
     <string name="permission_contacts_request_desc">We need your permission to read contacts so that you could select to whom we will send the message.</string>
-    <string name="services_request_invalid">Selected service is invalid, updating list of services...</string>
+    <string name="permission_location_request">Location tracking permission</string>
+    <string name="permission_location_request_desc">We need your permission to track your location so that we can execute the service in the right time and right place.</string>
 
 </resources>

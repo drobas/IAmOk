@@ -6,17 +6,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.michaldrobny.iamok.R;
-import com.michaldrobny.iamok.jobs.sms.AbstractSMSJob;
-import com.michaldrobny.iamok.model.ServiceParser;
+import com.michaldrobny.iamok.model.Constants;
+import com.michaldrobny.iamok.model.ServiceWrapper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +27,8 @@ public class MessageActivity extends AppCompatActivity {
         Intent intent = new Intent(MessageActivity.this, SummaryActivity.class);
         Bundle extras = getIntent().getExtras();
         assert(extras != null);
-        extras.putString(ServiceParser.ARG_MESSAGE, messageEditText.getText().toString());
-        extras.putBoolean(ServiceParser.ARG_EDIT, true);
+        extras.putString(Constants.ARG_MESSAGE, messageEditText.getText().toString());
+        extras.putBoolean(Constants.ARG_EDIT, true);
         intent.putExtras(extras);
         startActivity(intent);
     }
